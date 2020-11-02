@@ -1,0 +1,26 @@
+<html>
+<head>
+	<script src="js/peerjs.min.js"></script>
+</head>
+<body>
+
+	<video id="webcam" autoplay></video>
+	<!--<script src="js/script.js"></script>-->
+	<script type="text/javascript">
+		var server = new Peer('server', { host: 'localhost', port: 9090, path: '/' }); 
+		var serverID;
+		server.on('open', function(id) {
+			  console.log('My peer ID is: ' + id);
+		});
+		server.on('call', call => {
+			call.answer();
+			console.log('call');
+			call.on('stream', remoteStream => {
+				document.querySelector('video#webcam').srcObject = remoteStream; 				
+				const conn = server.call('receiver', document.querySelector('video#webcam').srcObject);
+			});
+		});
+		
+	</script>
+</body>
+</html>

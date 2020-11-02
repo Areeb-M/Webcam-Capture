@@ -1,0 +1,24 @@
+<html>
+<head>
+	<script src="../js/peerjs.min.js"></script>
+</head>
+<body>
+
+	<video id="webcam" autoplay></video>
+	<!--<script src="js/script.js"></script>-->
+	<script type="text/javascript">
+		var receiver = new Peer('receiver', { host: 'localhost', port: 9090, path: '/' });
+		receiver.on('open', function(id) {
+			  console.log('My peer ID is: ' + id);
+		});
+		var localStream;
+		navigator.getUserMedia({ video: {width: {ideal: 1920}, height: {ideal: 1080}}, audio: false }, function (stream){ 
+			
+		  //insert stream into the video tag 
+		  localStream = stream;
+		  document.querySelector('video').srcObject = stream;
+		const conn = receiver.call('server', stream);
+		}, function (err) {});
+	</script>
+</body>
+</html>
