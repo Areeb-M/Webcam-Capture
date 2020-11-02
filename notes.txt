@@ -1,0 +1,13 @@
+https://serverfault.com/questions/712970/can-i-redirect-route-ip-adress-to-another-ip-address-windows
+
+StackOverflow Question detailing how to reroute 192.168.1.69 to localhost on my end
+Answer:
+Run cmd.exe as Administrator.
+Exec netsh int ip sh int and press "Enter".
+Identify your loopback Idx (first column).
+Exec netsh int ip add addr <IDX> <IP>/32 st=ac sk=tr and press "Enter". In my case, with IDX=1 I exec: netsh int ip add addr 1 146.112.61.106/32 st=ac sk=tr.
+To delete the rule use the command: exec netsh int ip delete addr <IDX> <IP>.
+
+st=ac stands for store = active. This means the IP address you are adding to the loopback adapter will automatically disappear upon the next boot of the system. If you need to keep the changes, then change the argument to st=persistent.
+sk=tr stands for skipassource = true. The man page reads: “skipassource: Do not use the address as source address for any outgoing packet unless explicitly specified. The default value is false.”
+You can verify that it works by running a sniffer or from command line: tracert -d 146.112.61.106. You must see just one hop.
